@@ -393,15 +393,12 @@ const IOSMediaPlayerAndPhotoboxSection = ({ isPlayingAudio, onTogglePlayAudio })
   const videoRef = useRef(null);
 
   // Sync video play/pause with player audio state
+  // Video selalu muted agar tidak bentrok dengan AudioPlayer background
   useEffect(() => {
     if (!videoRef.current || !hasVideo) return;
+    videoRef.current.muted = true; // Pastikan selalu muted
     if (isPlayingAudio) {
-      videoRef.current.play().catch(() => {
-        if (videoRef.current) {
-          videoRef.current.muted = true;
-          videoRef.current.play().catch(() => {});
-        }
-      });
+      videoRef.current.play().catch(() => {});
     } else {
       videoRef.current.pause();
     }
@@ -576,10 +573,9 @@ const IOSMediaPlayerAndPhotoboxSection = ({ isPlayingAudio, onTogglePlayAudio })
                 src={VIDEO_CANDIDATES[videoIndex]}
                 poster="/user-photos/tyjaw-video-moment.jpg"
                 playsInline
-                webkit-playsinline="true"
                 preload="metadata"
                 loop
-                muted={false}
+                muted={true}
                 onError={handleVideoError}
                 onLoadedMetadata={(e) => {
                   if (e.target.duration && !isNaN(e.target.duration) && e.target.duration > 0) {
