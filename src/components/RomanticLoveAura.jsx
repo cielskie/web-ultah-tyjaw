@@ -14,7 +14,7 @@ import FallingPetals from './FallingPetals';
 export default function RomanticLoveAura() {
   // Generate floating glowing light motes & micro hearts
   const floatingLights = useMemo(() => {
-    return Array.from({ length: 28 }).map((_, i) => ({
+    return Array.from({ length: 12 }).map((_, i) => ({
       id: i,
       left: Math.random() * 100, // %
       size: Math.random() * 4 + 3, // 3px to 7px
@@ -27,7 +27,7 @@ export default function RomanticLoveAura() {
   }, []);
 
   const floatingHearts = useMemo(() => {
-    return Array.from({ length: 12 }).map((_, i) => ({
+    return Array.from({ length: 6 }).map((_, i) => ({
       id: i,
       left: Math.random() * 96 + 2,
       size: Math.random() * 10 + 10, // 10px to 20px
@@ -79,7 +79,7 @@ export default function RomanticLoveAura() {
       />
 
       {/* ── 2. Realistic Falling Flower Petals ── */}
-      <FallingPetals count={18} />
+      <FallingPetals count={10} />
 
       {/* ── 3. Floating Fairy Light Motes (Cahaya Kecil Beterbangan) ── */}
       {floatingLights.map((item) => (

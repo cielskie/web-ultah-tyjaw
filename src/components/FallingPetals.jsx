@@ -92,7 +92,7 @@ const PetalD = ({ gid }) => (
 );
 
 // ── Main FallingPetals component ─────────────────────────────────────────────
-export default function FallingPetals({ count = 30, zIndex = 30 }) {
+export default function FallingPetals({ count = 15, zIndex = 30 }) {
   useEffect(() => { injectKeyframes(); }, []);
 
   const petals = useMemo(() => {
