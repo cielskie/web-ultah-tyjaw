@@ -10,7 +10,7 @@
 export const birthdayData = {
   // ── Informasi Penerima ──────────────────────────────────────────────────
   recipient: {
-    fullName: 'Tyas Diva Syaqilla',
+    fullName: 'Tyas Diva Syakilla',
     nickname: 'TYJAW',
     shortName: 'Tyjaw',
   },
@@ -31,14 +31,14 @@ export const birthdayData = {
 
 tapii seneng bisa nemenin kamu ngerayain momen bertambahnya usia dari tahun ketahun hehe..
 
-Terima kasih juga ya Tyjaw sudah jadi tempat aku mengeluh setiap hari tempat aku yapping setiap hari, yang selalu sabar, dan jadi alasan buat senyum tiap hari. Apa pun yang terjadi ke depan, tetap jadi diri sendiri yang baij ya. Kalau ada apa-apa, capek, atau lagi pusing, ingat ada aku yang bakal selalu support dari belakang.
+Terima kasih juga ya Tyjaw sudah jadi tempat aku mengeluh setiap hari tempat aku yapping setiap hari, yang selalu sabar, dan jadi alasan buat senyum tiap hari. Apa pun yang terjadi ke depan, tetap jadi diri sendiri yang baik ya. Kalau ada apa-apa, capek, atau lagi pusing, ingat ada aku yang bakal selalu support dari belakang.
 
 Sekali lagi, happy 21st birthday, Tyjaw! Let's make this year our best year yet. I love u so much🤍`,
     longBody: `Selamat ulang tahun Sayangku🤍! Ga terasa sekarang udah masuk kepala dua yang makin matang, Semoga di umur yang sekarang ini bisa jadi pribadi yang lebih baik lebih sabar dan kurangin marah marahnya😅, dan semoga semua impian yang di harapkan dan semua yang diusahakan tercapai ya sayang! aku juga minta maaf kalo selama ini masih banyak kurangnya… 
 
 tapii seneng bisa nemenin kamu ngerayain momen bertambahnya usia dari tahun ketahun hehe..
 
-Terima kasih juga ya Tyjaw sudah jadi tempat aku mengeluh setiap hari tempat aku yapping setiap hari, yang selalu sabar, dan jadi alasan buat senyum tiap hari. Apa pun yang terjadi ke depan, tetap jadi diri sendiri yang baij ya. Kalau ada apa-apa, capek, atau lagi pusing, ingat ada aku yang bakal selalu support dari belakang.
+Terima kasih juga ya Tyjaw sudah jadi tempat aku mengeluh setiap hari tempat aku yapping setiap hari, yang selalu sabar, dan jadi alasan buat senyum tiap hari. Apa pun yang terjadi ke depan, tetap jadi diri sendiri yang baik ya. Kalau ada apa-apa, capek, atau lagi pusing, ingat ada aku yang bakal selalu support dari belakang.
 
 Sekali lagi, happy 21st birthday, Tyjaw! Let's make this year our best year yet. I love u so much🤍`,
   },

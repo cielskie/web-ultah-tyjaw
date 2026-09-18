@@ -281,7 +281,7 @@ const CustomRoyalLetter = ({ onComplete }) => {
               {birthdayData.letter?.title || 'Happy Birthday Sayang!'}
             </span>
             <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '8.5px', color: '#8f6826', letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600 }}>
-              Untuk Tyas Diva Syaqilla • 19 September
+              Untuk {birthdayData.recipient?.fullName || 'Tyas Diva Syakilla'} • 19 September
             </span>
           </div>
           <VintageAirmailStamp />
@@ -672,7 +672,7 @@ const IOSMediaPlayerAndPhotoboxSection = ({ isPlayingAudio, onTogglePlayAudio })
                   textOverflow: 'ellipsis',
                 }}
               >
-                Tyas Diva Syaqilla ❤️
+                {birthdayData.recipient?.fullName || 'Tyas Diva Syakilla'} ❤️
               </div>
             </div>
 
@@ -1655,7 +1655,7 @@ const ClosingBouquet = ({ onBack }) => {
           "Rimbun cintaku akan selalu mekar indah untukmu di setiap detik waktu."
         </p>
         <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '11px', color: 'rgba(223,193,136,0.85)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '28px' }}>
-          Happy 21st Birthday — Tyas Diva Syaqilla
+          Happy 21st Birthday — {birthdayData.recipient?.fullName || 'Tyas Diva Syakilla'}
         </p>
         {onBack && (
           <button
