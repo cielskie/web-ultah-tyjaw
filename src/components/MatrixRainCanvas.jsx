@@ -6,48 +6,25 @@ const MatrixRainCanvas = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+
+    // Use '2d' without willReadFrequently — we only write
+    const ctx = canvas.getContext('2d', { alpha: false });
     let animFrameId;
 
     // Romantic personalized runes & characters
     const chars = 'TYASDIVASYAKILLATYJAWHAPPYBIRTHDAY1909✦✧❀♡·';
     const fontSize = 14;
-    const colWidth = 18;
+    const colWidth = 24;      // wider columns → fewer cols → less work
 
-    const STREAMS_PER_COL = 3;
-    const TRAIL_LENGTH = 20;
+    const STREAMS_PER_COL = 1;  // was 3, reduced to 1
+    const TRAIL_LENGTH    = 12; // was 20, reduced to 12
 
-    let cols, drops, dpr;
+    // Pre-build trail alpha LUT to avoid per-frame division
+    const trailAlpha = Array.from({ length: TRAIL_LENGTH }, (_, t) =>
+      Math.max(0, 1 - t / TRAIL_LENGTH) * 0.85
+    );
 
-    const setSize = () => {
-      dpr = window.devicePixelRatio || 1;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-      ctx.scale(dpr, dpr);
-    };
-
-    const init = () => {
-      setSize();
-      cols = Math.floor(window.innerWidth / colWidth);
-
-      drops = [];
-      for (let c = 0; c < cols; c++) {
-        drops[c] = [];
-        for (let s = 0; s < STREAMS_PER_COL; s++) {
-          drops[c][s] = -Math.floor(Math.random() * 25) - (s * 16);
-        }
-      }
-    };
-
-    init();
-    window.addEventListener('resize', init);
-    window.addEventListener('orientationchange', init);
-
-    // Harmonious Soft Light Dark Pink & Champagne Palette
+    // Pre-build trail fillStyle strings per color to avoid template literals in hot loop
     const baseColors = [
       [242, 185, 203], // Soft blush rose
       [223, 193, 136], // Champagne gold
@@ -56,60 +33,93 @@ const MatrixRainCanvas = () => {
       [196, 112, 135], // Velvet rose
     ];
 
-    const getSpeed = () => 0.20 + Math.random() * 0.10;
-    const speeds = Array.from({ length: cols }, () =>
-      Array.from({ length: STREAMS_PER_COL }, getSpeed)
-    );
+    let cols = 0;
+    let drops = [];
+    let speeds = [];
 
-    const draw = () => {
+    // Pre-computed fillStyle cache: colorIdx → array of strings per trail step
+    let colorCache = [];
+
+    const buildColorCache = () => {
+      colorCache = baseColors.map(([r, g, b]) =>
+        trailAlpha.map(a => `rgba(${r},${g},${b},${a.toFixed(2)})`)
+      );
+    };
+
+    const setSize = () => {
+      // Draw at logical pixels only (no DPR scaling) — huge GPU relief on Retina
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      canvas.style.width  = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+    };
+
+    const init = () => {
+      setSize();
+      buildColorCache();
+      cols = Math.floor(window.innerWidth / colWidth);
+
+      drops = [];
+      speeds = [];
+      for (let c = 0; c < cols; c++) {
+        drops[c]  = -Math.floor(Math.random() * 25);
+        speeds[c] = 0.25 + Math.random() * 0.15;
+      }
+    };
+
+    init();
+    window.addEventListener('resize', init);
+    window.addEventListener('orientationchange', init);
+
+    // ── Frame throttle: target ~24fps instead of 60fps ──────────────────────
+    const TARGET_FPS  = 24;
+    const FRAME_MS    = 1000 / TARGET_FPS;
+    let   lastTime    = 0;
+
+    const draw = (timestamp) => {
       animFrameId = requestAnimationFrame(draw);
+
+      const delta = timestamp - lastTime;
+      if (delta < FRAME_MS) return; // skip frame — not enough time has passed
+      lastTime = timestamp - (delta % FRAME_MS); // keep timing accurate
+
       const logW = window.innerWidth;
       const logH = window.innerHeight;
 
-      // Soft light dark pink trail fade (matches base palette #1c0617)
-      ctx.fillStyle = 'rgba(28, 6, 23, 0.16)';
+      // Soft fade overlay
+      ctx.fillStyle = 'rgba(28, 6, 23, 0.18)';
       ctx.fillRect(0, 0, logW, logH);
 
-      ctx.font = `500 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
+      ctx.font = `500 ${fontSize}px monospace`;
       ctx.textBaseline = 'top';
 
       for (let c = 0; c < cols; c++) {
-        const x = c * colWidth;
-        const [r, g, b] = baseColors[c % baseColors.length];
+        const x       = c * colWidth;
+        const colorIdx = c % baseColors.length;
+        const headY   = drops[c];
 
-        for (let s = 0; s < STREAMS_PER_COL; s++) {
-          const headY = drops[c][s];
+        for (let t = 0; t < TRAIL_LENGTH; t++) {
+          const py = (headY - t) * fontSize;
+          if (py < -fontSize || py > logH) continue;
 
-          for (let t = 0; t < TRAIL_LENGTH; t++) {
-            const rowY = headY - t;
-            const py = rowY * fontSize;
+          // Cycle character cheaply
+          const char = chars[(c * 7 + t * 3 + Math.floor(headY)) % chars.length];
 
-            if (py < -fontSize || py > logH) continue;
+          ctx.fillStyle = t === 0
+            ? 'rgba(255, 248, 252, 0.95)' // bright head
+            : colorCache[colorIdx][t];
 
-            const char = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(char, x, py);
+        }
 
-            if (t === 0) {
-              // Warm ivory head
-              ctx.fillStyle = 'rgba(255, 248, 252, 0.95)';
-            } else {
-              // Trail fades as it gets further from head
-              const alpha = Math.max(0, 1 - t / TRAIL_LENGTH) * 0.85;
-              ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
-            }
-
-            ctx.fillText(char, x, py);
-          }
-
-          drops[c][s] += speeds[c][s];
-
-          if (drops[c][s] * fontSize > logH + TRAIL_LENGTH * fontSize) {
-            drops[c][s] = -Math.random() * 10;
-          }
+        drops[c] += speeds[c];
+        if (drops[c] * fontSize > logH + TRAIL_LENGTH * fontSize) {
+          drops[c] = -Math.random() * 10;
         }
       }
     };
 
-    draw();
+    animFrameId = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(animFrameId);
@@ -121,7 +131,7 @@ const MatrixRainCanvas = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 select-none opacity-80"
+      className="fixed inset-0 pointer-events-none z-0 select-none opacity-75"
     />
   );
 };
